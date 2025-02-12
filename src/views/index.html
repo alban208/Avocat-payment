@@ -1,12 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prendre Rendez-vous</title>
+    <title>Prise de Rendez-vous</title>
+    <script src="script.js" defer></script>
 </head>
 <body>
-    <h1>Prendre Rendez-vous</h1>
-    <!-- Add your content here -->
+    <h1>Prise de Rendez-vous</h1>
+    <label for="summary">Titre du Rendez-vous :</label>
+    <input type="text" id="summary" placeholder="Titre" required>
+
+    <label for="description">Description :</label>
+    <input type="text" id="description" placeholder="Détails">
+
+    <label for="start">Date et heure de début :</label>
+    <input type="datetime-local" id="start" required>
+
+    <label for="end">Date et heure de fin :</label>
+    <input type="datetime-local" id="end" required>
+
+    <button id="submit">Créer le Rendez-vous</button>
+
+    <p id="message"></p>
 </body>
 </html>
