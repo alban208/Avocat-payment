@@ -4,24 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prise de Rendez-vous</title>
+    <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
 <body>
-    <h1>Prise de Rendez-vous</h1>
-    <label for="summary">Titre du Rendez-vous :</label>
-    <input type="text" id="summary" placeholder="Titre" required>
+    <div class="container">
+        <h1>Prise de Rendez-vous</h1>
+        <label for="summary">Titre du Rendez-vous :</label>
+        <input type="text" id="summary" placeholder="Titre" required>
 
-    <label for="description">Description :</label>
-    <input type="text" id="description" placeholder="Détails">
+        <label for="description">Description :</label>
+        <input type="text" id="description" placeholder="Détails">
 
-    <label for="start">Date et heure de début :</label>
-    <input type="datetime-local" id="start" required>
+        <label for="start">Date et heure de début :</label>
+        <input type="datetime-local" id="start" required>
 
-    <label for="end">Date et heure de fin :</label>
-    <input type="datetime-local" id="end" required>
+        <label for="end">Date et heure de fin :</label>
+        <input type="datetime-local" id="end" required>
 
-    <button id="submit">Créer le Rendez-vous</button>
+        <button id="submit">Créer le Rendez-vous</button>
 
-    <p id="message"></p>
+        <p id="message"></p>
+    </div>
 </body>
 </html>
