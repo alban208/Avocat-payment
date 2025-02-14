@@ -3,26 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paiement</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+    <title>Paiement Stripe</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        #payment-form { max-width: 400px; margin: auto; }
+        button { margin-top: 20px; padding: 10px; font-size: 16px; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Paiement pour la prise de rendez-vous</h1>
-        
-        <label for="card-number">Numéro de carte :</label>
-        <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
-
-        <label for="expiry-date">Date d'expiration :</label>
-        <input type="text" id="expiry-date" placeholder="MM/AA" required>
-
-        <label for="cvv">CVV :</label>
-        <input type="text" id="cvv" placeholder="123" required>
-
-        <button id="pay-button">Payer</button>
-
+    <h1>Paiement sécurisé avec Stripe</h1>
+    
+    <form id="payment-form">
+        <div id="card-element"></div>
+        <button id="submit">Payer</button>
         <p id="message"></p>
-    </div>
+    </form>
+
+    <script>
+        const stripe = Stripe("pk_test_51QsQ0cKioXchmoTeGxGBITgUTVfcoxgN57SNtzqOPmB6kDGOHB773UkaReDEFsuUJEG5TUSRGMVWLzzqi65QBho200GkWa89br");
+        const elements = stripe.elements();
+        const card = elements.create("card");
+        card.mount("#card-element");
+
+        const form = document.getElementById("payment-form");
+        const message = document.getElementById("message");
+
+        form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    message.textContent = "Traitement du paiement...";
+
+    const response = await fetch("http://localhost:3000/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: 50 }) // Remplace par le montant réel
+    });
+
+    const { clientSecret } = await response.json();
+
+    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: { card: card }
+    });
+
+    if (error) {
+        message.textContent = `Erreur : ${error.message}`;
+    } else {
+        message.textContent = "Paiement réussi ✅";
+        
+        // Attendre 2 secondes puis rediriger vers la page de prise de rendez-vous
+        setTimeout(() => {
+            window.location.href = "/index.html"; // Mets ici le bon chemin de ta page
+        }, 2000);
+    }
+});
+
+    </script>
 </body>
 </html>
