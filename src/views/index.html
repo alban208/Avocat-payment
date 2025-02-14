@@ -26,5 +26,30 @@
 
         <p id="message"></p>
     </div>
+    <script>
+        document.getElementById("submit").addEventListener("click", () => {
+            const summary = document.getElementById("summary").value;
+            const description = document.getElementById("description").value;
+            const start = document.getElementById("start").value;
+            const end = document.getElementById("end").value;
+
+            // Store appointment details in localStorage
+            localStorage.setItem("summary", summary);
+            localStorage.setItem("description", description);
+            localStorage.setItem("start", start);
+            localStorage.setItem("end", end);
+
+            // Redirect to payment page
+            window.location.href = "/payment.html";
+        });
+
+        // On payment page load, populate hidden fields with appointment details
+        if (window.location.pathname.endsWith("/payment.html")) {
+            document.getElementById("summary").value = localStorage.getItem("summary");
+            document.getElementById("description").value = localStorage.getItem("description");
+            document.getElementById("start").value = localStorage.getItem("start");
+            document.getElementById("end").value = localStorage.getItem("end");
+        }
+    </script>
 </body>
 </html>

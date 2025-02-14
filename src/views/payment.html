@@ -16,6 +16,10 @@
     
     <form id="payment-form">
         <div id="card-element"></div>
+        <input type="hidden" id="summary" name="summary">
+        <input type="hidden" id="description" name="description">
+        <input type="hidden" id="start" name="start">
+        <input type="hidden" id="end" name="end">
         <button id="submit">Payer</button>
         <p id="message"></p>
     </form>
@@ -50,10 +54,29 @@
     } else {
         message.textContent = "Paiement réussi ✅";
         
-        // Attendre 2 secondes puis rediriger vers la page de prise de rendez-vous
-        setTimeout(() => {
-            window.location.href = "/index.html"; // Mets ici le bon chemin de ta page
-        }, 2000);
+        // Collect appointment details
+        const summary = document.getElementById("summary").value;
+        const description = document.getElementById("description").value;
+        const start = document.getElementById("start").value;
+        const end = document.getElementById("end").value;
+
+        // Send appointment details to the server
+        const appointmentResponse = await fetch("http://localhost:3000/add-event", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ summary, description, start, end })
+        });
+
+        const appointmentResult = await appointmentResponse.json();
+
+        if (appointmentResponse.ok) {
+            message.textContent += " Rendez-vous créé avec succès.";
+            setTimeout(() => {
+                window.location.href = "/index.html"; // Mets ici le bon chemin de ta page
+            }, 2000);
+        } else {
+            message.textContent += ` Erreur lors de la création du rendez-vous : ${appointmentResult.error}`;
+        }
     }
 });
 
