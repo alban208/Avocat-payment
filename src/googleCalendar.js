@@ -3,15 +3,45 @@ const path = require('path');
 const { google } = require('googleapis');
 const express = require('express');
 const bodyParser = require('body-parser');
+const Stripe = require('stripe');
+const cors = require('cors');
+const dotenv = require('dotenv').config();
+
+require('dotenv').config();
+console.log("Clé Stripe chargée :", process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+
+app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'views')));
 
 app.get('/', (req, res) => {
     res.redirect('/payment.html');
+});
+// Endpoint pour créer un PaymentIntent
+app.post('/create-payment-intent', async (req, res) => {
+    try {
+        const { amount } = req.body;
+
+        if (!amount || typeof amount !== 'number' || amount <= 0) {
+            return res.status(400).json({ error: 'Le montant doit être un nombre positif.' });
+        }
+
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: Math.round(amount * 100), // Stripe utilise les centimes
+            currency: 'eur',
+            automatic_payment_methods: { enabled: true },
+        });
+
+        res.json({ clientSecret: paymentIntent.client_secret });
+    } catch (error) {
+        console.error("Erreur Stripe :", error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // Définir le chemin du fichier credentials
@@ -124,3 +154,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Serveur démarré sur http://localhost:${PORT}`);
 });
+
